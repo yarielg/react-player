@@ -90,7 +90,10 @@ function App() {
       <button onClick={playPause}>{playing ? 'Pause' : 'Play'}</button>
       <button onClick={forward}>Forward</button>
       <button onClick={backward}>Backward</button>
-      <p>{current}</p>
+      <h1>{current}</h1>
+      <p>
+        {JSON.stringify(timelogs)}
+      </p>
     </>
   );
 }
