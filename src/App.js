@@ -5,9 +5,9 @@ import './App.css';
 const total = logs => logs.reduce((tot, el) => tot + el[1] - el[0], 0);
 
 const timelogs = [
-  [60, 65],
-  [120, 125],
-  [200, 205]
+  [60, 75],
+  [120, 140],
+  [200, 215]
 ];
 
 console.log(timelogs[0][1]);
@@ -36,9 +36,11 @@ const calcNext = played => {
       played < timelogs[i + 1][0]
     ) {
       return timelogs[i + 1][0];
+    } else if (played >= timelogs[i][0] && played <= timelogs[i][1]) {
+      return -1;
     }
   }
-  return -1;
+  return -2;
 };
 
 function App() {
@@ -54,6 +56,11 @@ function App() {
 
     const next = calcNext(playedSeconds);
     if (next === -1) return;
+    if (next === -2) {
+      ref.current.seekTo(timelogs[0][0]);
+      setPlaying(false);
+      return;
+    }
     ref.current.seekTo(next);
   };
 
@@ -62,11 +69,11 @@ function App() {
   };
 
   const forward = () => {
-    setPlayed(played => played + 5);
+    ref.current.seekTo(played + 5);
   };
 
   const backward = () => {
-    setPlayed(played => (played >= 5 ? played - 5 : 0));
+    ref.current.seekTo(played > 5 ? played - 5 : 0);
   };
 
   return (
