@@ -102,7 +102,7 @@ function App() {
       <div className="inner">
         <ReactPlayer
           ref={ref}
-          url="https://www.youtube.com/watch?v=Rq5SEhs9lws"
+          url="https://www.youtube.com/watch?v=LKaXY4IdZ40"
           controls={true}
           playing={playing}
           onPause={() => setPlaying(false)}
