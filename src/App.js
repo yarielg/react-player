@@ -126,7 +126,7 @@ function App() {
       <ReactBootstrapSlider
         value={current}
         change={changeValue}
-        slideStop={changeValue}
+        // slideStop={changeValue}
         step={1}
         max={total}
         min={0}
