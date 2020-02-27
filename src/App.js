@@ -1,8 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import ReactPlayer from 'react-player';
+import { ButtonGroup, Button, ProgressBar } from 'react-bootstrap';
 import './App.css';
-
-const total = logs => logs.reduce((tot, el) => tot + el[1] - el[0], 0);
 
 const timelogs = [
   [60, 75],
@@ -10,14 +9,13 @@ const timelogs = [
   [200, 215]
 ];
 
-console.log(timelogs[0][1]);
-console.log('-------');
+const total = timelogs.reduce((tot, el) => tot + el[1] - el[0], 0);
 
 const calcCurrent = played => {
   let current = 0;
   for (let i = 0; i < timelogs.length; i++) {
     if (played > timelogs[i][1]) current += timelogs[i][1] - timelogs[i][0];
-    else if (played > timelogs[i][0]){
+    else if (played > timelogs[i][0]) {
       current += played - timelogs[i][0];
       break;
     }
@@ -41,6 +39,18 @@ const calcNext = played => {
     }
   }
   return -2;
+};
+
+const calcPlayedFromCurrent = current => {
+  if (current <= 0) return timelogs[0][0];
+  for (let i = 0; i < timelogs.length; i++) {
+    if (current >= timelogs[i][1] - timelogs[i][0]) {
+      current -= timelogs[i][1] - timelogs[i][0];
+    } else {
+      return timelogs[i][0] + current;
+    }
+  }
+  return timelogs[0][0];
 };
 
 function App() {
@@ -69,32 +79,40 @@ function App() {
   };
 
   const forward = () => {
-    ref.current.seekTo(played + 5);
+    ref.current.seekTo(calcPlayedFromCurrent(current + 5));
   };
 
   const backward = () => {
-    ref.current.seekTo(played > 5 ? played - 5 : 0);
+    ref.current.seekTo(calcPlayedFromCurrent(current - 5));
   };
 
   return (
-    <>
-      <ReactPlayer
-        ref={ref}
-        url="https://www.youtube.com/watch?v=Rq5SEhs9lws"
-        controls={true}
-        playing={playing}
-        onPause={() => setPlaying(false)}
-        onPlay={() => setPlaying(true)}
-        onProgress={handleProgress}
-      />
-      <button onClick={playPause}>{playing ? 'Pause' : 'Play'}</button>
-      <button onClick={forward}>Forward</button>
-      <button onClick={backward}>Backward</button>
+    <div className="outer">
+      <div className="inner">
+        <ReactPlayer
+          ref={ref}
+          url="https://www.youtube.com/watch?v=Rq5SEhs9lws"
+          controls={true}
+          playing={playing}
+          onPause={() => setPlaying(false)}
+          onPlay={() => setPlaying(true)}
+          onProgress={handleProgress}
+        />
+      </div>
+
+      <ButtonGroup className="mt-3">
+        <Button onClick={backward}>Backward</Button>
+        <Button onClick={playPause}>{playing ? 'Pause' : 'Play'}</Button>
+        <Button onClick={forward}>Forward</Button>
+      </ButtonGroup>
+
       <h1>{current}</h1>
-      <p>
-        {JSON.stringify(timelogs)}
-      </p>
-    </>
+      <p>{JSON.stringify(timelogs)}</p>
+
+      <div>
+        <ProgressBar now={(current / total) * 100} label={`${current}s`} />
+      </div>
+    </div>
   );
 }
 
