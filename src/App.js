@@ -1,6 +1,9 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
+import ReactBootstrapSlider from 'react-bootstrap-slider';
 import { ButtonGroup, Button, ProgressBar } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-slider/dist/css/bootstrap-slider.css';
 import './App.css';
 
 const timelogs = [
@@ -79,11 +82,19 @@ function App() {
   };
 
   const forward = () => {
-    ref.current.seekTo(calcPlayedFromCurrent(current + 5));
+    gotoPlayedFromCurrent(current + 5);
   };
 
   const backward = () => {
-    ref.current.seekTo(calcPlayedFromCurrent(current - 5));
+    // ref.current.seekTo(calcPlayedFromCurrent(current - 5));
+    gotoPlayedFromCurrent(current - 5);
+  };
+
+  const gotoPlayedFromCurrent = value =>
+    ref.current.seekTo(calcPlayedFromCurrent(value));
+
+  const changeValue = e => {
+    gotoPlayedFromCurrent(e.target.value);
   };
 
   return (
@@ -112,6 +123,14 @@ function App() {
       <div>
         <ProgressBar now={(current / total) * 100} label={`${current}s`} />
       </div>
+      <ReactBootstrapSlider
+        value={current}
+        change={changeValue}
+        slideStop={changeValue}
+        step={1}
+        max={total}
+        min={0}
+      />
     </div>
   );
 }
